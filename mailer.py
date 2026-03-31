@@ -62,51 +62,40 @@ def send_email(to_email, subject, html_body):
 
 def build_email_html(articles_by_category, edition="Morning"):
     now = datetime.now().strftime("%B %d, %Y")
-    html = f"""
-    <html><body style="margin:0;padding:0;background:#f5f0e8;font-family:'Georgia',serif;">
+    html = f"""<html><body style="margin:0;padding:0;background:#f5f0e8;font-family:'Georgia',serif;">
     <div style="max-width:680px;margin:0 auto;background:#f5f0e8;">
         <div style="background:#1a1410;padding:32px;text-align:center;">
-            <div style="font-size:36px;font-weight:900;color:#f5f0e8;letter-spacing:-1px;">The <span style="color:#c1440e">Brief</span></div>
+            <div style="font-size:36px;font-weight:900;color:#f5f0e8;">The <span style="color:#c1440e">Brief</span></div>
             <div style="font-size:11px;letter-spacing:3px;color:#6b5d50;text-transform:uppercase;margin-top:6px;">{edition} Edition · {now}</div>
         </div>
         <div style="background:#c1440e;height:4px;"></div>
         <div style="padding:40px 40px 0;">
             <p style="font-size:16px;color:#5a4a3a;line-height:1.8;border-left:3px solid #c1440e;padding-left:16px;">
-                Your {edition.lower()} intelligence brief — top stories across world news, technology, business and politics.
+                Your {edition.lower()} intelligence brief.
             </p>
-        </div>
-    """
-    category_labels = {"world": "🌍 World News", "tech": "💻 Technology", "business": "📈 Business & Economy", "politics": "🏛 Politics"}
+        </div>"""
+    category_labels = {{"world": "World News", "tech": "Technology", "business": "Business & Economy", "politics": "Politics"}}
     for category, articles in articles_by_category.items():
         if not articles:
             continue
         label = category_labels.get(category, category.title())
-        html += f"""
-        <div style="padding:32px 40px 0;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c1440e;border-bottom:2px solid #c1440e;padding-bottom:8px;margin-bottom:20px;">{label}</div>
-        """
+        html += f"""<div style="padding:32px 40px 0;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#c1440e;border-bottom:2px solid #c1440e;padding-bottom:8px;margin-bottom:20px;">{label}</div>"""
         for a in articles[:4]:
             title = a.get("title", "")
             source = a.get("source", "")
             url = a.get("url", "")
             desc = a.get("description", "")
             date = a.get("publishedAt", "")
-            html += f"""
-            <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e0d8cc;">
-                <div style="font-size:11px;color:#c1440e;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">{source} · {date}</div>
-                <a href="{url}" style="font-size:17px;font-weight:700;color:#1a1410;text-decoration:none;line-height:1.4;display:block;margin-bottom:6px;">{title}</a>
+            html += f"""<div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e0d8cc;">
+                <div style="font-size:11px;color:#c1440e;font-weight:700;margin-bottom:6px;">{source} · {date}</div>
+                <a href="{url}" style="font-size:17px;font-weight:700;color:#1a1410;text-decoration:none;display:block;margin-bottom:6px;">{title}</a>
                 <div style="font-size:14px;color:#5a4a3a;line-height:1.6;">{desc[:200]}...</div>
-            </div>
-            """
+            </div>"""
         html += "</div>"
-    html += f"""
-        <div style="padding:32px 40px;text-align:center;margin-top:32px;border-top:1px solid #d9d0c4;">
-            <div style="font-size:11px;color:#c9bfb0;letter-spacing:1px;">
-                You're receiving this because you subscribed to The Brief.
-            </div>
-        </div>
-    </div></body></html>
-    """
+    html += """<div style="padding:32px 40px;text-align:center;border-top:1px solid #d9d0c4;">
+            <div style="font-size:11px;color:#c9bfb0;">You are receiving this because you subscribed to The Brief.</div>
+        </div></div></body></html>"""
     return html
 
 def send_brief_to_all(edition="Morning"):
@@ -128,4 +117,3 @@ def send_brief_to_all(edition="Morning"):
         if success:
             sent += 1
     return sent
-    
