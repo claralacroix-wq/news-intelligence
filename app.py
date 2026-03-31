@@ -153,11 +153,14 @@ st.markdown(f"""
     <div class="site-meta-bar">{today}</div>
 </div>
 <div class="red-stripe"></div>
+</div>
+""", unsafe_allow_html=True)
+
 ticker_items = get_ticker_data()
 ticker_html = '<div class="ticker"><div class="ticker-inner">' + "".join(ticker_items) + '</div></div>'
 st.markdown(ticker_html, unsafe_allow_html=True)
-</div>
-""", unsafe_allow_html=True)
+
+unsafe_allow_html=True)
 
 if "tab" not in st.session_state:
     st.session_state.tab = "digest"
