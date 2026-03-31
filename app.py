@@ -160,7 +160,6 @@ ticker_items = get_ticker_data()
 ticker_html = '<div class="ticker"><div class="ticker-inner">' + "".join(ticker_items) + '</div></div>'
 st.markdown(ticker_html, unsafe_allow_html=True)
 
-unsafe_allow_html=True)
 
 if "tab" not in st.session_state:
     st.session_state.tab = "digest"
