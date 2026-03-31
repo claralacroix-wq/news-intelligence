@@ -181,20 +181,20 @@ if tab == "digest":
     with st.spinner("Loading today's digest..."):
     digest = fetch_full_digest()
 
-with st.spinner("Writing today's briefing..."):
-    try:
-        from analyzer import generate_digest_summary
-        digest_summary = generate_digest_summary(digest)
-    except:
-        digest_summary = ""
+    with st.spinner("Writing today's briefing..."):
+        try:
+            from analyzer import generate_digest_summary
+            digest_summary = generate_digest_summary(digest)
+        except:
+            digest_summary = ""
 
 
-with st.spinner("Writing today's briefing..."):
-    try:
-        from analyzer import generate_digest_summary
-        digest_summary = generate_digest_summary(digest)
-    except:
-        digest_summary = ""
+    with st.spinner("Writing today's briefing..."):
+        try:
+            from analyzer import generate_digest_summary
+            digest_summary = generate_digest_summary(digest)
+        except:
+            digest_summary = ""
 
     all_top = []
     for cat, articles in digest.items():
