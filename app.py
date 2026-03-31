@@ -5,6 +5,35 @@ from digest import fetch_full_digest, CATEGORY_LABELS
 from mailer import add_subscriber, remove_subscriber, load_subscribers, send_brief_to_all, send_email, build_email_html
 from datetime import datetime
 
+import yfinance as yf
+
+@st.cache_data(ttl=300)
+def get_ticker_data():
+    symbols = {
+        "S&P 500": "^GSPC",
+        "NASDAQ": "^IXIC",
+        "DOW JONES": "^DJI",
+        "BITCOIN": "BTC-USD",
+        "GOLD": "GC=F",
+        "EUR/USD": "EURUSD=X",
+    }
+    items = []
+    for name, symbol in symbols.items():
+        try:
+            t = yf.Ticker(symbol)
+            hist = t.history(period="2d")
+            if len(hist) >= 2:
+                prev = hist["Close"].iloc[-2]
+                curr = hist["Close"].iloc[-1]
+                change = ((curr - prev) / prev) * 100
+                arrow = "▲" if change >= 0 else "▼"
+                cls = "up" if change >= 0 else "down"
+                price = f"{curr:,.2f}"
+                items.append(f'<span class="ticker-item"><b>{name}</b> {price} <span class="{cls}">{arrow} {abs(change):.2f}%</span></span>')
+        except:
+            pass
+    return items * 2
+    
 st.set_page_config(page_title="The Brief — News Intelligence", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
@@ -124,21 +153,9 @@ st.markdown(f"""
     <div class="site-meta-bar">{today}</div>
 </div>
 <div class="red-stripe"></div>
-<div class="ticker">
-    <div class="ticker-inner">
-        <span class="ticker-item"><b>S&P 500</b> 5,234.18 <span class="up">▲ +0.42%</span></span>
-        <span class="ticker-item"><b>NASDAQ</b> 16,742.39 <span class="up">▲ +0.61%</span></span>
-        <span class="ticker-item"><b>DOW JONES</b> 38,996.39 <span class="down">▼ -0.11%</span></span>
-        <span class="ticker-item"><b>BITCOIN</b> 67,842.10 <span class="up">▲ +1.23%</span></span>
-        <span class="ticker-item"><b>GOLD</b> 2,341.50 <span class="up">▲ +0.18%</span></span>
-        <span class="ticker-item"><b>EUR/USD</b> 1.0842 <span class="down">▼ -0.09%</span></span>
-        <span class="ticker-item"><b>S&P 500</b> 5,234.18 <span class="up">▲ +0.42%</span></span>
-        <span class="ticker-item"><b>NASDAQ</b> 16,742.39 <span class="up">▲ +0.61%</span></span>
-        <span class="ticker-item"><b>DOW JONES</b> 38,996.39 <span class="down">▼ -0.11%</span></span>
-        <span class="ticker-item"><b>BITCOIN</b> 67,842.10 <span class="up">▲ +1.23%</span></span>
-        <span class="ticker-item"><b>GOLD</b> 2,341.50 <span class="up">▲ +0.18%</span></span>
-        <span class="ticker-item"><b>EUR/USD</b> 1.0842 <span class="down">▼ -0.09%</span></span>
-    </div>
+ticker_items = get_ticker_data()
+ticker_html = '<div class="ticker"><div class="ticker-inner">' + "".join(ticker_items) + '</div></div>'
+st.markdown(ticker_html, unsafe_allow_html=True)
 </div>
 """, unsafe_allow_html=True)
 
