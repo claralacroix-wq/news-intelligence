@@ -2,7 +2,7 @@ import streamlit as st
 from collector import fetch_newsapi, fetch_rss, enrich_with_metadata
 from analyzer import analyze_articles
 from digest import fetch_full_digest, CATEGORY_LABELS
-from mailer import add_subscriber, remove_subscriber, load_subscribers, send_brief_to_all, send_email, build_email_html, fetch_category
+from mailer import add_subscriber, remove_subscriber, load_subscribers, send_brief_to_all, send_email, build_email_html
 from datetime import datetime
 
 st.set_page_config(page_title="The Brief — News Intelligence", layout="wide", initial_sidebar_state="collapsed")
