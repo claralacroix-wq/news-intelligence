@@ -179,12 +179,27 @@ tab = st.session_state.tab
 
 if tab == "digest":
     with st.spinner("Loading today's digest..."):
-        digest = fetch_full_digest()
+    digest = fetch_full_digest()
+
+with st.spinner("Writing today's briefing..."):
+    try:
+        from analyzer import generate_digest_summary
+        digest_summary = generate_digest_summary(digest)
+    except:
+        digest_summary = ""
 
     all_top = []
     for cat, articles in digest.items():
         all_top.extend(articles[:2])
 
+if digest_summary:
+    st.markdown(f"""
+    <div style="max-width:780px;margin:0 auto;padding:40px 40px 0;border-bottom:1px solid #d9d0c4;">
+        <div style="font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:#c1440e;text-transform:uppercase;margin-bottom:16px;">Editor's Briefing</div>
+        <div style="font-family:'Source Serif 4',serif;font-size:19px;color:#3a2e24;line-height:1.9;">{digest_summary}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     if all_top:
         st.markdown('<div class="trending"><div class="trending-label">🔥 Trending Now</div><div class="trending-items">', unsafe_allow_html=True)
         items = ""
