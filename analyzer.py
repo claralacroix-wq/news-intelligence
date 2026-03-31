@@ -101,30 +101,31 @@ Articles to analyze:
                     "top_entities": []
                 }
             
-                def generate_digest_summary(articles_by_category):
-    import anthropic, os
-    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-    
-    all_headlines = []
-    for category, articles in articles_by_category.items():
-        for a in articles[:3]:
-            all_headlines.append(f"[{category.upper()}] {a.get('title', '')}")
-    
-    headlines_text = "\n".join(all_headlines[:20])
-    
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=300,
-        messages=[{
-            "role": "user",
-            "content": f"""You are an editor writing a morning briefing. Based on these headlines, write a 3-4 sentence summary of the most important stories of the day. Be direct, informative and authoritative. No bullet points — flowing prose only.
+
+def generate_digest_summary(articles_by_category):
+import anthropic, os
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+all_headlines = []
+for category, articles in articles_by_category.items():
+    for a in articles[:3]:
+        all_headlines.append(f"[{category.upper()}] {a.get('title', '')}")
+
+headlines_text = "\n".join(all_headlines[:20])
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=300,
+    messages=[{
+        "role": "user",
+        "content": f"""You are an editor writing a morning briefing. Based on these headlines, write a 3-4 sentence summary of the most important stories of the day. Be direct, informative and authoritative. No bullet points — flowing prose only.
 
 Headlines:
 {headlines_text}
 
 Write the briefing now:"""
-        }]
-    )
-    return message.content[0].text
+    }]
+)
+return message.content[0].text
 
   
